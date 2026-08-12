@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Anestesia Pediatrica">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAIAAAB7GkOtAAASn0lEQVR4nO3dSXckx3UG0CyeWtEAGmh7w73+kNa2aXmgOUqcZ3GmxEmcJFGWD21Zpo/X/kPac+VGkzjmFl6AhpvobjSAqswXEd+9p1YS2YxMRLwvX1QGevUXf/h0AiDP+vj4uHoMABS4r3oAANQQAAChBABAKAEAEEoAAIQSAACh1pO3QAEirScJABDJFhBAKAEAEEoAAIQSAAChBABAKK+BAoTSAQCEEgAAoQQAQCgBABDKa6AAoXQAAKEEAEAoAQAQSgAAhBIAAKEcBAMIpQMACCUAAEIJAIBQAgAglAAACOUcAEAoHQBAKOcAAELpAABCCQCAUAIAIJTXQAFC6QAAQgkAgFACACCUcwAAoXQAAKEEAEAoAQAQSgAAhFpP3gIFyOQ1UIBQtoAAQgkAgFACACCUcwAAoXQAAKEEAEAo5wAAQnkNFCCULSCAULaAAEIJAIBQAgAglAAACCUAAEIJAIBQzgEAhHIOACCULSCAUAIAIJQAAAglAABCCQCAUM4BAITyGihAKB0AQCgBABBKAACEEgAAoRwEAwilAwAIJQAAQjkHABBKAACEEgAAodbT/vsCkGSt/gOEsgUEEEoAAIQSAAChBABAKAEAEEoAAIRyDgAglNdAAULpAABCCQCAUM4BAITSAQCEEgAAoQQAQCjnAABC6QAAQjkHABDKOQCAUDoAgFACACCUAAAI5RwAQCgdAEAo5wAAQukAAEIJAIBQAgAglAAACOU1UIBQOgCAUAIAIJRzAACheq/+t1L9YRhqOwCh/g84cHIYd1B4RgAAAABJRU5ErkJggg==">
+<title>Calcolatore Anestesia Pediatrica</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#ffffff; --panel2:#f8fafc; --ink:#0f172a; --muted:#64748b;
+    --border:#e2e8f0; --accent:#0891b2; --accent-dark:#0e7490; --warn:#b45309; --warnbg:#fef3c7;
+    --danger:#b91c1c; --good:#15803d;
+    --cat1:#0891b2; --cat2:#7c3aed; --cat3:#db2777; --cat4:#059669; --cat5:#d97706; --cat6:#2563eb; --cat7:#dc2626; --cat8:#4f46e5; --cat9:#0d9488;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:#eef2f6; color:var(--ink);}
+  header{background:linear-gradient(135deg,#0f172a,#0e7490); color:#fff; padding:14px 20px; position:sticky; top:0; z-index:50; box-shadow:0 2px 8px rgba(0,0,0,.15);}
+  header h1{margin:0; font-size:1.25rem; font-weight:700;}
+  header .sub{font-size:.78rem; opacity:.85; margin-top:2px;}
+  .wrap{max-width:1200px; margin:0 auto; padding:16px;}
+
+  .patient-card{background:var(--panel); border-radius:14px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,.08); margin-bottom:16px; border:1px solid var(--border);}
+  .patient-card h2{margin:0 0 12px; font-size:1rem; color:var(--accent-dark);}
+  .grid-inputs{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px;}
+  .field{display:flex; flex-direction:column; gap:4px;}
+  .field label{font-size:.72rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
+  .field input, .field select{padding:8px 10px; border:1px solid var(--border); border-radius:8px; font-size:.95rem; width:100%;}
+  .field .hint{font-size:.68rem; color:var(--muted);}
+  .subfield-row{display:flex; gap:6px; align-items:center;}
+  .subfield-row input{flex:1;}
+  .age-toggle{display:flex; gap:4px;}
+  .age-toggle button{flex:1; padding:7px 4px; font-size:.75rem; border:1px solid var(--border); background:#fff; border-radius:6px; cursor:pointer;}
+  .age-toggle button.active{background:var(--accent); color:#fff; border-color:var(--accent);}
+
+  .derived-card{background:var(--panel); border-radius:14px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,.08); margin-bottom:16px; border:1px solid var(--border);}
+  .derived-card h2{margin:0 0 10px; font-size:1rem; color:var(--accent-dark);}
+  .derived-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+  .derived-group{background:var(--panel2); border-radius:10px; padding:10px 12px; border:1px solid var(--border);}
+  .derived-group h3{margin:0 0 6px; font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; color:var(--muted);}
+  .derived-row{display:flex; justify-content:space-between; font-size:.85rem; padding:3px 0; border-bottom:1px dashed #e5e9f0;}
+  .derived-row:last-child{border-bottom:none;}
+  .derived-row .val{font-weight:700; color:var(--ink);}
+  .na{color:#b3b9c2; font-style:italic;}
+
+  .search-bar{display:flex; gap:8px; margin-bottom:14px; position:sticky; top:66px; z-index:40;}
+  .search-bar input{flex:1; padding:10px 14px; border-radius:10px; border:1px solid var(--border); font-size:.95rem; box-shadow:0 1px 3px rgba(0,0,0,.06); background:#fff;}
+  .search-bar button{padding:10px 16px; border-radius:10px; border:none; background:var(--accent); color:#fff; font-weight:600; cursor:pointer;}
+
+  .category{background:var(--panel); border-radius:14px; margin-bottom:14px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.08); border:1px solid var(--border);}
+  .category-head{padding:12px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; color:#fff; font-weight:700; font-size:.92rem;}
+  .category-body{padding:6px 0; display:block;}
+  .category.collapsed .category-body{display:none;}
+  .category-head .chev{transition:transform .15s;}
+  .category.collapsed .chev{transform:rotate(-90deg);}
+  .category-source{font-size:.68rem; font-weight:400; opacity:.85; display:block; margin-top:2px;}
+
+  table{width:100%; border-collapse:collapse; font-size:.86rem;}
+  thead th{text-align:left; font-size:.68rem; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); padding:6px 16px; border-bottom:1px solid var(--border);}
+  tbody td{padding:7px 16px; border-bottom:1px solid #f1f4f8; vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#f8fbfd;}
+  .drug-name{font-weight:600;}
+  .drug-route{color:var(--muted); font-size:.78rem;}
+  .dose-per-kg{color:var(--muted); font-size:.78rem;}
+  .dose-out{font-weight:700; font-size:.95rem; white-space:nowrap;}
+  .dose-out.cap{color:var(--warn);}
+  .note{font-size:.72rem; color:var(--muted); font-style:italic; display:block; margin-top:2px;}
+  .timing{font-size:.8rem; white-space:nowrap;}
+  .hidden-row{display:none;}
+
+  .disclaimer{background:var(--warnbg); border:1px solid #fbbf24; border-radius:12px; padding:14px 16px; font-size:.8rem; color:#78350f; margin:18px 0; line-height:1.5;}
+  .disclaimer b{display:block; margin-bottom:4px;}
+  footer{text-align:center; font-size:.72rem; color:var(--muted); padding:20px;}
+
+  @media print{
+    .search-bar, header .no-print, .age-toggle{display:none !important;}
+    .category{break-inside:avoid;}
+    body{background:#fff;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap" style="padding:0;">
+    <h1>Calcolatore Anestesia Pediatrica</h1>
+    <div class="sub">Farmaci, presidi e formule per peso corporeo ed età — strumento di supporto clinico</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="patient-card">
+    <h2>Dati paziente</h2>
+    <div class="grid-inputs">
+      <div class="field">
+        <label>Nome paziente (opzionale)</label>
+        <input type="text" id="patName" placeholder="—">
+      </div>
+      <div class="field">
+        <label>Età</label>
+        <div class="age-toggle">
+          <button type="button" id="ageModeMonths" class="active">Mesi (0–24)</button>
+          <button type="button" id="ageModeYears">Anni (&gt;2)</button>
+        </div>
+        <input type="number" id="ageValue" min="0" step="0.1" placeholder="es. 8" style="margin-top:6px;">
+      </div>
+      <div class="field">
+        <label>Peso corporeo</label>
+        <div class="subfield-row">
+          <input type="number" id="wtKg" min="0" step="0.1" placeholder="kg">
+          <span class="hint">kg</span>
+        </div>
+        <div class="subfield-row">
+          <input type="number" id="wtLb" min="0" step="0.1" placeholder="oppure libbre">
+          <span class="hint">lb</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Altezza</label>
+        <div class="subfield-row">
+          <input type="number" id="htCm" min="0" step="0.5" placeholder="cm">
+          <span class="hint">cm</span>
+        </div>
+        <div class="subfield-row">
+          <input type="number" id="htIn" min="0" step="0.5" placeholder="oppure pollici">
+          <span class="hint">in</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Ore di digiuno (NPO)</label>
+        <input type="number" id="npoHours" min="0" step="0.5" placeholder="ore">
+      </div>
+      <div class="field">
+        <label>Frequenza respiratoria</label>
+        <input type="number" id="respRate" min="0" step="1" placeholder="atti/min">
+      </div>
+      <div class="field">
+        <label>Ematocrito attuale</label>
+        <input type="number" id="hctNow" min="0" max="100" step="0.1" placeholder="%">
+      </div>
+      <div class="field">
+        <label>Ematocrito minimo accettabile</label>
+        <input type="number" id="hctMin" min="0" max="100" step="0.1" placeholder="%">
+      </div>
+    </div>
+  </div>
+
+  <div class="derived-card">
+    <h2>Parametri calcolati</h2>
+    <div class="derived-grid" id="derivedGrid"></div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="searchBox" placeholder="Cerca un farmaco (es. atropina, rocuronio, paracetamolo...)">
+    <button id="expandAllBtn" type="button">Espandi tutto</button>
+    <button id="printBtn" type="button">Stampa</button>
+  </div>
+
+  <div id="categoriesContainer"></div>
+
+  <div class="disclaimer">
+    <b>Avvertenza</b>
+    Questo strumento è stato realizzato a partire da un foglio di calcolo di riferimento per l'anestesia pediatrica e serve come supporto al calcolo, non sostituisce il giudizio clinico. Verificare sempre il foglietto illustrativo del farmaco per indicazioni, dosaggi, avvertenze e precauzioni aggiornate. La responsabilità della prescrizione e della somministrazione resta in capo al clinico. I volumi di sangue stimato (EBV) sono stati calcolati con fasce d'età standard (neonato/lattante &lt;6 mesi: 85 mL/kg; 6–24 mesi: 80 mL/kg; bambino &gt;2 anni: 70 mL/kg), correggendo una condizione logica del foglio originale che rendeva ininfluenti alcune fasce d'età. Le profondità minime/massime di inserimento del tubo endotracheale ricalcano i valori del foglio originale e vanno confermate con auscultazione e radiografia/capnografia. Gli schemi di sedazione procedurale sono stati aggiunti a partire da materiale didattico SIMEUP ("Analgosedazione Procedurale in Pronto Soccorso in età pediatrica") e da fonti bibliografiche indicate nelle note; vanno sempre confermati con il protocollo locale del proprio reparto/pronto soccorso prima dell'uso.
+  </div>
+
+  <footer>Calcolatore realizzato su richiesta a partire dal foglio Google Sheets dell'utente · uso clinico interno · verificare sempre le fonti primarie</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  function num(id){
+    const v = document.getElementById(id).value;
+    if(v === "" || v === null || isNaN(parseFloat(v))) return null;
+    return parseFloat(v);
+  }
+  function fmt(x, decimals){
+    if(x === null || x === undefined || isNaN(x)) return null;
+    decimals = decimals === undefined ? 2 : decimals;
+    let r = Math.round(x * Math.pow(10,decimals)) / Math.pow(10,decimals);
+    return r;
+  }
+  function naSpan(){ return '<span class="na">— dato mancante</span>'; }
+
+  let ageMode = 'months';
+
+  document.getElementById('ageModeMonths').addEventListener('click', function(){
+    ageMode='months';
+    document.getElementById('ageModeMonths').classList.add('active');
+    document.getElementById('ageModeYears').classList.remove('active');
+    update();
+  });
+  document.getElementById('ageModeYears').addEventListener('click', function(){
+    ageMode='years';
+    document.getElementById('ageModeYears').classList.add('active');
+    document.getElementById('ageModeMonths').classList.remove('active');
+    update();
+  });
+
+  document.getElementById('wtKg').addEventListener('input', function(){
+    const kg = num('wtKg');
+    if(kg !== null){ document.getElementById('wtLb').value = fmt(kg*2.2,1); }
+    update();
+  });
+  document.getElementById('wtLb').addEventListener('input', function(){
+    const lb = num('wtLb');
+    if(lb !== null){ document.getElementById('wtKg').value = fmt(lb/2.2,2); }
+    update();
+  });
+  document.getElementById('htCm').addEventListener('input', function(){
+    const cm = num('htCm');
+    if(cm !== null){ document.getElementById('htIn').value = fmt(cm/2.54,1); }
+    update();
+  });
+  document.getElementById('htIn').addEventListener('input', function(){
+    const inch = num('htIn');
+    if(inch !== null){ document.getElementById('htCm').value = fmt(inch*2.54,1); }
+    update();
+  });
+  ['npoHours','respRate','hctNow','hctMin','ageValue','patName'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', update);
+  });
+
+  function getPatient(){
+    const wt = num('wtKg');
+    const ht = num('htCm');
+    const ageVal = num('ageValue');
+    let totalMonths = null;
+    if(ageVal !== null){
+      totalMonths = ageMode === 'months' ? ageVal : ageVal*12;
+    }
+    return {
+      wt: wt,
+      ht: ht,
+      totalMonths: totalMonths,
+      years: totalMonths !== null ? totalMonths/12 : null,
+      npo: num('npoHours'),
+      rr: num('respRate'),
+      hct: num('hctNow'),
+      hctMin: num('hctMin')
+    };
+  }
+
+  function computeDerived(p){
+    const out = {};
+    const wt = p.wt, ht = p.ht, m = p.totalMonths, y = p.years;
+
+    out.bsa = (wt!==null && ht!==null) ? (Math.pow(wt,0.425)*Math.pow(ht,0.725)*71.84)/10000 : null;
+
+    if(wt!==null){
+      out.deadSpace = 2.2*wt;
+      out.tidalRest = 6*wt;
+      out.tidal10 = 10*wt;
+    }
+    if(m!==null){
+      if(m>=24) out.etSize = 4 + (y/4);
+      else if(m<=6) out.etSize = 3.5;
+      else out.etSize = 4;
+      out.etNose = m>=12 ? (15 + (y/2)) : null;
+    }
+    if(wt!==null && wt<=5) out.lipLength = wt+6; else out.lipLength = null;
+    if(m!==null && wt!==null && wt>5){
+      if(m>=2 && m<=6) out.etMin = 8;
+      else if(m>6 && m<=24) out.etMin = 10;
+      else if(m>24) out.etMin = 10 + (y/2);
+      else out.etMin = null;
+      if(m>=3 && m<=6) out.etMax = 10;
+      else if(m>6 && m<12) out.etMax = 11;
+      else if(m>=12 && m<=24) out.etMax = 12;
+      else if(m>24) out.etMax = 12 + (y/2);
+      else out.etMax = null;
+    }
+
+    if(wt!==null && p.rr!==null){
+      out.alveolarVent = (out.tidal10 - out.deadSpace) * p.rr;
+      out.minuteVent = (out.deadSpace * p.rr) + out.alveolarVent;
+    }
+
+    if(wt!==null){
+      if(wt<=10) out.maintRate = wt*4;
+      else if(wt<=20) out.maintRate = (wt-10)*2+40;
+      else out.maintRate = wt+40;
+      out.minorSurg = wt*3;
+      out.moderateSurg = wt*5;
+      out.majorSurg = wt*7;
+    }
+    if(out.maintRate!==undefined && p.npo!==null){
+      out.npoDeficit = p.npo * out.maintRate;
+      out.hour1 = 0.5*out.npoDeficit;
+      out.hour2 = 0.25*out.npoDeficit;
+      out.hour3 = 0.25*out.npoDeficit;
+    }
+
+    if(wt!==null && m!==null){
+      let tier = m<6 ? 85 : (m<=24 ? 80 : 70);
+      out.ebvTier = tier;
+      out.ebv = wt*tier;
+    }
+    if(out.ebv!==undefined && p.hct!==null && p.hctMin!==null && p.hct>0){
+      out.allowableLoss = ((p.hct - p.hctMin)/p.hct) * out.ebv;
+    }
+    if(wt!==null){
+      out.prbcPer1g = wt*4;
+      out.prbcPer10pct = wt*10;
+    }
+
+    return out;
+  }
+
+  function row(label, value, unit, decimals){
+    const v = (value===null || value===undefined || isNaN(value)) ? null : fmt(value, decimals===undefined?1:decimals);
+    return '<div class="derived-row"><span>'+label+'</span><span class="val">'+(v===null? naSpan() : (v+' '+unit))+'</span></div>';
+  }
+
+  function renderDerived(p, d){
+    let html = '';
+
+    html += '<div class="derived-group"><h3>Antropometria</h3>';
+    html += row('Superficie corporea (BSA)', d.bsa, 'm²', 3);
+    html += '</div>';
+
+    html += '<div class="derived-group"><h3>Vie aeree</h3>';
+    html += row('Tubo ET — diametro interno', d.etSize, 'mm', 2);
+    html += row('Tubo ET — lunghezza al naso', d.etNose, 'cm', 1);
+    html += row('Lunghezza neonato/lattante ≤5kg (al labbro)', d.lipLength, 'cm', 1);
+    html += row('Profondità inserimento — minima', d.etMin, 'cm', 1);
+    html += row('Profondità inserimento — massima', d.etMax, 'cm', 1);
+    html += '</div>';
+
+    html += '<div class="derived-group"><h3>Ventilazione</h3>';
+    html += row('Spazio morto', d.deadSpace, 'mL', 1);
+    html += row('Volume corrente (a riposo, 6mL/kg)', d.tidalRest, 'mL', 1);
+    html += row('Volume corrente (10 mL/kg)', d.tidal10, 'mL', 1);
+    html += row('Ventilazione alveolare', d.alveolarVent, 'mL/min', 0);
+    html += row('Ventilazione minuto', d.minuteVent, 'mL/min', 0);
+    html += '</div>';
+
+    html += '<div class="derived-group"><h3>Fluidi (regola 4-2-1)</h3>';
+    html += row('Fabbisogno di mantenimento', d.maintRate, 'mL/h', 1);
+    html += row('Deficit totale da digiuno', d.npoDeficit, 'mL', 0);
+    html += row('Reintegro — 1ª ora', d.hour1, 'mL', 0);
+    html += row('Reintegro — 2ª ora', d.hour2, 'mL', 0);
+    html += row('Reintegro — 3ª ora', d.hour3, 'mL', 0);
+    html += '</div>';
+
+    html += '<div class="derived-group"><h3>Fabbisogno chirurgico aggiuntivo</h3>';
+    html += row('Chirurgia minore (3 mL/kg/h)', d.minorSurg, 'mL/h', 1);
+    html += row('Chirurgia moderata (5 mL/kg/h)', d.moderateSurg, 'mL/h', 1);
+    html += row('Chirurgia maggiore (7 mL/kg/h)', d.majorSurg, 'mL/h', 1);
+    html += '</div>';
+
+    html += '<div class="derived-group"><h3>Volume ematico e trasfusione</h3>';
+    html += row('Volume ematico stimato (EBV)'+(d.ebvTier? ' — '+d.ebvTier+' mL/kg':''), d.ebv, 'mL', 0);
+    html += row('Perdita ematica consentita', d.allowableLoss, 'mL', 0);
+    html += row('Emazie concentrate per +1 g/dL Hb', d.prbcPer1g, 'mL', 1);
+    html += row('Emazie concentrate per +10% / +3 g Hct', d.prbcPer10pct, 'mL', 1);
+    html += '</div>';
+
+    document.getElementById('derivedGrid').innerHTML = html;
+  }
+
+  function doseHTML(item, wt){
+    if(item.textOnly) return '<span class="note">'+item.textOnly+'</span>';
+    if(wt===null) return naSpan();
+
+    if(item.tiered){
+      const r = item.tiered(wt);
+      return '<span class="dose-out">'+fmt(r.value, r.decimals===undefined?2:r.decimals)+' '+r.unit+'</span>' + (r.note?('<span class="note">'+r.note+'</span>'):'');
+    }
+    if(item.units){
+      const u = wt/item.units;
+      return '<span class="dose-out">≈ '+fmt(u,1)+' unità</span>';
+    }
+    if(item.perKgLow !== undefined){
+      let lo = wt*item.perKgLow, hi = wt*item.perKgHigh;
+      let capped = false;
+      if(item.max !== undefined){
+        if(hi > item.max){ hi = item.max; capped = true; }
+        if(lo > item.max){ lo = item.max; capped = true; }
+      }
+      let capNote = (item.max!==undefined) ? '<span class="note">max '+item.max+' '+item.unit+'</span>' : '';
+      return '<span class="dose-out'+(capped?' cap':'')+'">'+fmt(lo,2)+' – '+fmt(hi,2)+' '+item.unit+'</span>'+capNote;
+    }
+    if(item.perKg !== undefined){
+      let d = wt*item.perKg;
+      let capped = false;
+      if(item.max !== undefined && d>item.max){ d=item.max; capped=true; }
+      if(item.min !== undefined && d<item.min){ d=item.min; capped=true; }
+      let capNote = '';
+      if(item.max!==undefined || item.min!==undefined){
+        capNote = '<span class="note">'+(item.min!==undefined?('min '+item.min+' '+item.unit+' '):'')+(item.max!==undefined?('max '+item.max+' '+item.unit):'')+'</span>';
+      }
+      return '<span class="dose-out'+(capped?' cap':'')+'">'+fmt(d,2)+' '+item.unit+'</span>'+capNote;
+    }
+    return naSpan();
+  }
+
+  const categories = [
+    { title:"Sedazione procedurale (Pronto Soccorso pediatrico)", color:"var(--cat9)",
+      source:"Fonte: SIMEUP – Analgosedazione Procedurale in PS in età pediatrica; dose IN ketamina da Oliveira &amp; Silva, Am J Emerg Med 2020. Verificare sempre il protocollo locale.",
+      items:[
+      {name:"Midazolam", route:"EV", perKgLow:0.1, perKgHigh:0.2, unit:"mg", max:5, onset:"1 min", duration:"30-45 min"},
+      {name:"Midazolam", route:"Intranasale (IN)", perKgLow:0.3, perKgHigh:0.7, unit:"mg", max:15, onset:"10-15 min", duration:"30-45 min"},
+      {name:"Midazolam", route:"Orale", perKgLow:0.5, perKgHigh:0.8, unit:"mg", max:15, onset:"15-30 min", duration:"fino a 60 min"},
+      {name:"Fentanil", route:"EV", perKgLow:1, perKgHigh:2, unit:"mcg", onset:"1 min", duration:"20-30 min"},
+      {name:"Fentanil", route:"Intranasale (IN)", perKgLow:1, perKgHigh:2, unit:"mcg", onset:"2-5 min", duration:"20-30 min"},
+      {name:"Ketamina", route:"EV — effetto analgesico", perKgLow:0.1, perKgHigh:0.3, unit:"mg", onset:"1 min", duration:"15-20 min"},
+      {name:"Ketamina", route:"IM — effetto analgesico", perKg:0.5, unit:"mg", onset:"5 min", duration:"15-45 min"},
+      {name:"Ketamina", route:"IN non diluito — effetto analgesico", perKgLow:1, perKgHigh:3, unit:"mg", onset:"3-5 min", duration:"—"},
+      {name:"Ketamina", route:"EV — sedazione dissociativa", perKgLow:1, perKgHigh:2, unit:"mg", onset:"1 min", duration:"15-20 min"},
+      {name:"Ketamina", route:"IM — sedazione dissociativa", perKgLow:4, perKgHigh:5, unit:"mg", onset:"5 min", duration:"15-45 min"},
+      {name:"Ketamina", route:"IN — sedazione dissociativa", perKgLow:6, perKgHigh:9, unit:"mg", onset:"3-5 min", duration:"—"},
+      {name:"Dexmedetomidina", route:"IM", perKgLow:1, perKgHigh:4, unit:"mcg", onset:"10-15 min", duration:"45 min"},
+      {name:"Dexmedetomidina", route:"EV", perKgLow:1, perKgHigh:3, unit:"mcg", onset:"10-15 min", duration:"30-45 min"},
+      {name:"Dexmedetomidina", route:"Intranasale (IN)", perKgLow:2, perKgHigh:4, unit:"mcg", onset:"45 min", duration:"60-90 min"},
+      {name:"Dexmedetomidina", route:"Buccale", perKgLow:3, perKgHigh:4, unit:"mcg", onset:"45-60 min", duration:"60-90 min"},
+      {name:"Propofol", route:"EV", perKgLow:1, perKgHigh:2, unit:"mg", onset:"2-3 min", duration:"10-15 min"},
+    ]},
+    { title:"Farmaci pre-operatori", color:"var(--cat1)", items:[
+      {name:"Atropina", route:"IM", perKg:0.02, unit:"mg", min:0.1, max:0.6},
+      {name:"Atropina", route:"IV", perKg:0.01, unit:"mg", min:0.1, max:0.5},
+      {name:"Cimetidina", route:"PO / IV lenta", perKg:7.5, unit:"mg"},
+      {name:"Clonidina", route:"PO", perKg:0.004, unit:"mg", note:"(4 mcg/kg)"},
+      {name:"Glicopirrolato", route:"IV / IM", perKg:0.01, unit:"mg"},
+      {name:"Ketamina", route:"IM (sedazione)", perKg:5, unit:"mg"},
+      {name:"Metoclopramide", route:"IV", perKg:0.1, unit:"mg"},
+      {name:"Midazolam", route:"IV", perKg:0.05, unit:"mg"},
+      {name:"Midazolam", route:"PO", perKg:0.5, unit:"mg", max:15},
+      {name:"Midazolam", route:"IM", perKg:0.08, unit:"mg"},
+      {name:"Midazolam", route:"Nasale", perKg:0.3, unit:"mg"},
+      {name:"Morfina", route:"IM", perKg:0.1, unit:"mg"},
+      {name:"Ranitidina", route:"PO / IV lenta", perKg:1, unit:"mg", max:50},
+    ]},
+    { title:"Induzione", color:"var(--cat2)", items:[
+      {name:"Ketamina", route:"IV", perKgLow:0.5, perKgHigh:3, unit:"mg"},
+      {name:"Propofol", route:"IV", perKgLow:2, perKgHigh:3.5, unit:"mg"},
+      {name:"Tiopentale", route:"IV", perKgLow:2, perKgHigh:5, unit:"mg"},
+    ]},
+    { title:"Intubazione", color:"var(--cat3)", items:[
+      {name:"Succinilcolina", route:"IV", perKg:2, unit:"mg"},
+      {name:"Atropina", route:"IV (pre-succinilcolina)", perKg:0.01, unit:"mg", min:0.1, max:0.5},
+      {name:"Lidocaina", route:"IV", perKg:1, unit:"mg"},
+      {name:"Succinilcolina", route:"IM", perKg:4, unit:"mg"},
+      {name:"Rocuronio", route:"IM", perKg:1.8, unit:"mg"},
+      {name:"Atracurio", route:"IV — dose di intubazione", perKg:0.5, unit:"mg"},
+      {name:"Cisatracurio", route:"IV — dose di intubazione", perKgLow:0.1, perKgHigh:0.2, unit:"mg"},
+      {name:"Mivacurio", route:"IV — dose di intubazione", perKg:0.3, unit:"mg"},
+      {name:"Pancuronio", route:"IV — dose di intubazione", perKg:0.1, unit:"mg"},
+      {name:"Rocuronio", route:"IV — dose di intubazione", perKg:0.6, unit:"mg"},
+      {name:"Rocuronio", route:"IV — sequenza rapida", perKg:1.2, unit:"mg"},
+      {name:"Vecuronio", route:"IV — dose di intubazione", perKg:0.1, unit:"mg"},
+    ]},
+    { title:"Miorilassanti — mantenimento", color:"var(--cat3)", items:[
+      {name:"Atracurio", route:"IV — mantenimento", perKg:0.1, unit:"mg"},
+      {name:"Cisatracurio", route:"IV — mantenimento", perKg:0.02, unit:"mg"},
+      {name:"Mivacurio", route:"IV — mantenimento", perKg:0.08, unit:"mg"},
+      {name:"Pancuronio", route:"IV — mantenimento", perKg:0.05, unit:"mg"},
+      {name:"Rocuronio", route:"IV — mantenimento", perKg:0.15, unit:"mg"},
+      {name:"Vecuronio", route:"IV — mantenimento", perKg:0.025, unit:"mg"},
+    ]},
+    { title:"Decurarizzazione (reversal)", color:"var(--cat4)", items:[
+      {name:"Edrofonio", route:"IV", perKg:0.3, unit:"mg", note:"associato ad atropina"},
+      {name:"Atropina", route:"IV (con edrofonio)", perKg:1, unit:"mg"},
+      {name:"Neostigmina", route:"IV", perKg:0.06, unit:"mg", note:"associare glicopirrolato; iniziare con ½ dose e ripetere x1"},
+      {name:"Flumazenil", route:"IV PRN", perKg:0.01, unit:"mg", note:"(10 mcg/kg)"},
+      {name:"Naloxone", route:"IV PRN", perKg:0.005, unit:"mg", note:"(5 mcg/kg)"},
+    ]},
+    { title:"Oppioidi (narcotici)", color:"var(--cat5)", items:[
+      {name:"Sufentanil", route:"Anestesia bilanciata — 1 ora", perKgLow:0.125, perKgHigh:0.25, unit:"mcg"},
+      {name:"Sufentanil", route:"Anestesia bilanciata — 2 ore", perKgLow:0.25, perKgHigh:2, unit:"mcg"},
+      {name:"Sufentanil", route:"Caso esteso", perKgLow:2, perKgHigh:4, unit:"mcg", note:"dose totale ≤1 mcg/kg/h di intervento per estubazione a fine caso"},
+      {name:"Sufentanil", route:"Cardiochirurgia", perKgLow:10, perKgHigh:15, unit:"mcg"},
+      {name:"Fentanyl", route:"Anestesia bilanciata — standard", perKgLow:1, perKgHigh:3, unit:"mcg"},
+      {name:"Fentanyl", route:"Anestesia bilanciata — alto dosaggio", perKgLow:4, perKgHigh:10, unit:"mcg"},
+      {name:"Fentanyl", route:"Cardiochirurgia", perKgLow:10, perKgHigh:50, unit:"mcg"},
+      {name:"Remifentanil", route:"Dose da carico (≥2 anni, in 60 sec)", perKg:1, unit:"mcg"},
+      {name:"Remifentanil", route:"Mantenimento (standard)", tiered:function(wt){ return {value:(wt*0.2*60/20), unit:"mL/h (min)", decimals:1, note:"0.2–0.5 mcg/kg/min · conc. 20 mcg/mL · vedi anche massimo"}; }},
+      {name:"Remifentanil", route:"Mantenimento — estremo superiore standard", tiered:function(wt){ return {value:(wt*0.5*60/20), unit:"mL/h (max)", decimals:1}; }},
+      {name:"Remifentanil", route:"Mantenimento esteso — minimo", tiered:function(wt){ return {value:(wt*0.05*60/20), unit:"mL/h (min)", decimals:1, note:"range esteso 0.05–1.3 mcg/kg/min · conc. 20 mcg/mL"}; }},
+      {name:"Remifentanil", route:"Mantenimento esteso — massimo", tiered:function(wt){ return {value:(wt*1.3*60/20), unit:"mL/h (max)", decimals:1}; }},
+    ]},
+    { title:"Peri-operatori", color:"var(--cat6)", items:[
+      {name:"Aminofillina", route:"IV", perKg:5, unit:"mg"},
+      {name:"Clonidina", route:"IV", perKg:0.002, unit:"mg", note:"(2 mcg/kg)"},
+      {name:"Difenidramina", route:"IV", perKg:0.25, unit:"mg"},
+      {name:"Dolasetron", route:"IV", perKg:0.35, unit:"mg"},
+      {name:"Droperidolo", route:"IV", perKg:0.05, unit:"mg"},
+      {name:"Efedrina", route:"IV PRN", perKg:0.2, unit:"mg"},
+      {name:"Furosemide", route:"IV PRN", perKg:0.1, unit:"mg"},
+      {name:"Granisetron", route:"IV", perKg:0.01, unit:"mg", note:"(10 mcg/kg)"},
+      {name:"Idrocortisone", route:"IV (preparazione)", perKg:2, unit:"mg"},
+      {name:"Ketorolac", route:"IV", perKg:0.5, unit:"mg"},
+      {name:"Labetalolo", route:"IV", perKg:0.2, unit:"mg"},
+      {name:"Meperidina", route:"IV (per dose, fino a 1 mg/kg totale)", perKg:0.5, unit:"mg"},
+      {name:"Solfato di morfina", route:"IV", perKg:0.1, unit:"mg"},
+      {name:"Ondansetron", route:"IV", perKg:0.1, unit:"mg"},
+      {name:"Fenilefrina", route:"IV PRN", perKg:0.002, unit:"mg", note:"(2 mcg/kg)"},
+      {name:"Crioprecipitato", route:"—", units:5},
+      {name:"FFP (plasma fresco congelato)", route:"IV — monitorare PT/aPTT", perKg:15, unit:"mL"},
+      {name:"Piastrine", route:"per aumento 30–50K", units:10},
+    ]},
+    { title:"Farmaci d'emergenza", color:"var(--cat7)", items:[
+      {name:"Adenosina", route:"IV (dose iniziale, PRN fino a 0.25 mg/kg totale)", perKg:0.1, unit:"mg"},
+      {name:"Amiodarone", route:"IV", perKg:5, unit:"mg"},
+      {name:"Atropina", route:"IV (PRN x2)", perKg:0.02, unit:"mg", min:0.1, max:0.5},
+      {name:"Cloruro di calcio", route:"IV", perKg:20, unit:"mg", max:500},
+      {name:"Dantrolene", route:"IV (per dose, fino a 10 mg/kg totale)", perKg:2, unit:"mg"},
+      {name:"Desametasone", route:"IV", perKg:0.5, unit:"mg"},
+      {name:"Destrosio", route:"IV", tiered:function(wt){ return {value:wt*0.5, unit:"g", decimals:2}; }},
+      {name:"Epinefrina", route:"IV (1:10.000) — dose iniziale", perKg:0.01, unit:"mg"},
+      {name:"Epinefrina", route:"IV (1:1000) — dosi successive", perKg:0.1, unit:"mg"},
+      {name:"Fisostigmina", route:"IV", perKg:0.02, unit:"mg", max:2, note:"(20 mcg/kg)"},
+      {name:"Bicarbonato di sodio", route:"IV", perKg:1, unit:"mEq"},
+      {name:"Bolo di liquidi", route:"IV PRN", perKg:10, unit:"mL"},
+      {name:"Cristalloidi / Albumina 5%", route:"IV", perKg:20, unit:"mL"},
+      {name:"Defibrillazione", route:"—", perKg:2, unit:"J"},
+      {name:"Epinefrina racemica 2.25%", route:"Nebulizzazione (croup, estubazione) — diluita in 2 mL SF", tiered:function(wt){
+          let v = wt<=20 ? 0.25 : (wt<=40 ? 0.5 : 0.75);
+          return {value:v, unit:"mL", decimals:2, note:"≤20 kg: 0.25 mL · 20–40 kg: 0.5 mL · >40 kg: 0.75 mL"};
+        }},
+    ]},
+    { title:"Antibiotici (terapeutici)", color:"var(--cat8)", items:[
+      {name:"Ampicillina", route:"IV q6h", perKgLow:25, perKgHigh:50, unit:"mg"},
+      {name:"Cefazolina", route:"IV q8h", perKgLow:8.3, perKgHigh:33.3, unit:"mg"},
+      {name:"Cefotetan", route:"IV q12h", perKgLow:20, perKgHigh:40, unit:"mg"},
+      {name:"Cefoxitina", route:"IV q4–6h", perKgLow:13.3, perKgHigh:26.6, unit:"mg"},
+      {name:"Ceftriaxone", route:"q12–24h", perKgLow:25, perKgHigh:37.5, unit:"mg"},
+      {name:"Clindamicina", route:"IV lenta, q6–8h", perKgLow:6.25, perKgHigh:10, unit:"mg"},
+      {name:"Gentamicina", route:"IV q8h", perKgLow:1.5, perKgHigh:2.5, unit:"mg"},
+      {name:"Vancomicina", route:"IV lenta, q6–8h", perKgLow:10, perKgHigh:15, unit:"mg"},
+    ]},
+    { title:"Analgesici", color:"var(--cat1)", items:[
+      {name:"Paracetamolo", route:"PO", perKg:15, unit:"mg"},
+      {name:"Paracetamolo", route:"PR", perKg:40, unit:"mg"},
+      {name:"Ibuprofene", route:"PO", perKg:10, unit:"mg"},
+    ]},
+    { title:"Profilassi endocardite (SBE) — entro 30 min dalla procedura", color:"var(--cat2)", items:[
+      {name:"Ampicillina", route:"IV / IM — rischio standard", perKg:50, unit:"mg"},
+      {name:"Clindamicina", route:"IV lenta — rischio standard", perKg:20, unit:"mg"},
+      {name:"Cefazolina", route:"IV / IM — alternativa", perKg:25, unit:"mg"},
+      {name:"Vancomicina", route:"IV lenta — rischio moderato", perKg:20, unit:"mg"},
+      {name:"Ampicillina", route:"IV / IM (o Vancomicina) — alto rischio", perKg:50, unit:"mg"},
+      {name:"Gentamicina", route:"IV / IM — da aggiungere in alto rischio", perKg:1.5, unit:"mg"},
+    ]},
+  ];
+
+  function renderCategories(wt){
+    const container = document.getElementById('categoriesContainer');
+    let html = '';
+    categories.forEach(function(cat, ci){
+      html += '<div class="category" data-idx="'+ci+'">';
+      html += '<div class="category-head" style="background:'+cat.color+'"><span>'+cat.title+(cat.source?('<span class="category-source">'+cat.source+'</span>'):'')+'</span><span class="chev">▾</span></div>';
+      html += '<div class="category-body"><table><thead><tr><th>Farmaco</th><th>Via / note</th><th>Dose/kg</th><th>Dose calcolata</th><th>Onset</th><th>Durata</th></tr></thead><tbody>';
+      cat.items.forEach(function(item, ii){
+        const perKgLabel = item.perKgLow!==undefined ? (item.perKgLow+'–'+item.perKgHigh+' '+item.unit+'/kg')
+                          : item.perKg!==undefined ? (item.perKg+' '+item.unit+'/kg')
+                          : item.units!==undefined ? ('1 unità / '+item.units+' kg')
+                          : '';
+        html += '<tr data-search="'+(item.name+' '+item.route).toLowerCase()+'">';
+        html += '<td class="drug-name">'+item.name+'</td>';
+        html += '<td class="drug-route">'+item.route+(item.note?('<span class="note">'+item.note+'</span>'):'')+'</td>';
+        html += '<td class="dose-per-kg">'+perKgLabel+'</td>';
+        html += '<td>'+doseHTML(item, wt)+'</td>';
+        html += '<td class="timing">'+(item.onset || '–')+'</td>';
+        html += '<td class="timing">'+(item.duration || '–')+'</td>';
+        html += '</tr>';
+      });
+      html += '</tbody></table></div></div>';
+    });
+    container.innerHTML = html;
+
+    document.querySelectorAll('.category-head').forEach(function(h){
+      h.addEventListener('click', function(){
+        h.parentElement.classList.toggle('collapsed');
+      });
+    });
+    applySearch();
+  }
+
+  function applySearch(){
+    const q = document.getElementById('searchBox').value.trim().toLowerCase();
+    document.querySelectorAll('.category').forEach(function(cat){
+      let anyVisible = false;
+      cat.querySelectorAll('tbody tr').forEach(function(tr){
+        const match = q==='' || tr.getAttribute('data-search').indexOf(q) !== -1;
+        tr.classList.toggle('hidden-row', !match);
+        if(match) anyVisible = true;
+      });
+      cat.style.display = anyVisible ? '' : 'none';
+      if(q!=='' && anyVisible) cat.classList.remove('collapsed');
+    });
+  }
+
+  document.getElementById('searchBox').addEventListener('input', applySearch);
+  document.getElementById('expandAllBtn').addEventListener('click', function(){
+    document.querySelectorAll('.category').forEach(function(c){ c.classList.remove('collapsed'); });
+  });
+  document.getElementById('printBtn').addEventListener('click', function(){ window.print(); });
+
+  function update(){
+    const p = getPatient();
+    const d = computeDerived(p);
+    renderDerived(p, d);
+    renderCategories(p.wt);
+  }
+
+  update();
+})();
+</script>
+</body>
+</html>
