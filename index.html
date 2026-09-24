@@ -43,6 +43,10 @@ header .sub{font-size:.78rem; opacity:.85; margin-top:2px;}
 .quick-card .qc-badge{font-size:.68rem; text-transform:uppercase; letter-spacing:.04em; background:rgba(255,255,255,.18); padding:3px 9px; border-radius:20px;}
 .quick-card .qc-dose{font-size:1.6rem; font-weight:800; line-height:1.15;}
 .quick-card .qc-sub{font-size:.78rem; opacity:.9; margin-top:2px;}
+.quick-card .qc-notes{list-style:none; margin:10px 0 0; padding:10px 12px; background:rgba(255,255,255,.14); border-radius:8px; font-size:.76rem; line-height:1.6;}
+.quick-card .qc-notes li{padding-left:16px; position:relative;}
+.quick-card .qc-notes li::before{content:"•"; position:absolute; left:2px; opacity:.85;}
+.quick-card .qc-notes b{font-weight:700;}
 .quick-card .qc-link{display:inline-block; margin-top:10px; font-size:.78rem; color:#fff; text-decoration:underline; cursor:pointer; opacity:.95;}
 .quick-card .qc-link:hover{opacity:1;}
 .derived-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
@@ -172,6 +176,11 @@ body{background:#fff;}
 </div>
 <div class="qc-dose" id="ozasedDose">— dato mancante</div>
 <div class="qc-sub" id="ozasedSub">Inserisci il peso per calcolare la dose (0,25 mg/kg, max 20 mg)</div>
+<ul class="qc-notes">
+<li><b>Durata dell'effetto:</b> circa 1 ora dalla somministrazione</li>
+<li><b>Aspirare sempre puro:</b> non va mai diluito</li>
+<li><b>Applicatore già tarato in kg</b> (non in mg): la dose standard 0,25 mg/kg è incorporata nella graduazione, per ridurre il rischio di errore</li>
+</ul>
 <span class="qc-link" id="ozasedJump">Vedi scheda completa (controindicazioni, interazioni, somministrazione) ↓</span>
 </div>
 
@@ -446,9 +455,10 @@ items:[
 anchorId:"ozased-full",
 source:"Fonte: RCP OZASED 2 mg/ml soluzione orale, Istituto Gentili S.r.l. — revisione testo 04/2026. Indicato 6 mesi–17 anni per sedazione moderata prima di procedura diagnostica/terapeutica o come premedicazione anestesiologica.",
 items:[
-{name:"OZASED", route:"PO — dose singola, con applicatore orale graduato in kg dedicato", perKg:0.25, unit:"mg", max:20, note:"non raccomandata una dose successiva immediata; somministrare ~30 min prima della procedura/anestesia", onset:"30-45 min", duration:"—"},
+{name:"OZASED", route:"PO — dose singola, con applicatore orale graduato in kg dedicato", perKg:0.25, unit:"mg", max:20, note:"non raccomandata una dose successiva immediata; somministrare ~30 min prima della procedura/anestesia", onset:"30-45 min", duration:"~1h"},
 ],
 info:'<b>Composizione e presentazione</b>2 mg/ml; fiala monodose da 5 ml = 10 mg di midazolam. Contiene gammadex, etanolo (&lt;100 mg/fiala) e sodio (&lt;1 mmol/fiala). Per pazienti &gt;40 kg servono 2 fiale (es. 41 kg: prelevare 30 kg dalla prima fiala + 11 kg dalla seconda; 42 kg: 30 kg + 12 kg).'+
+'<b class="warn-line">Note pratiche</b>Aspirare sempre il farmaco puro dalla fiala: <u>non va mai diluito</u>. La siringa/applicatore orale è già "tarata" in kg (non in mg), proprio per ridurre il rischio di errore di dosaggio: si preleva direttamente fino alla tacca corrispondente al peso del paziente, dose standard 0,25 mg/kg già incorporata nella graduazione. La durata dell\'effetto è di circa 1 ora dalla somministrazione.'+
 '<b>Popolazione pediatrica</b>Sicurezza ed efficacia non stabilite sotto i 6 mesi: nessun dato disponibile. Nei pazienti obesi la dose si calcola sul peso corporeo effettivo, comunque fino al limite di 20 mg.'+
 '<b class="warn-line">Controindicazioni</b>Ipersensibilità al principio attivo/benzodiazepine; miastenia grave; insufficienza respiratoria grave; anomalia anatomica delle vie respiratorie o malattia polmonare; sindrome da apnea notturna; compromissione epatica grave.'+
 '<b>Cautele</b>Insufficienza respiratoria cronica, epatica lieve/moderata, cardiaca o renale cronica (possibile accumulo/prolungamento effetto); pazienti in cattivo stato generale (maggiore sensibilità SNC); storia di alcolismo/tossicodipendenza (evitare); associazione con alcol o altri depressori del SNC (evitare — rischio di sedazione profonda/depressione respiratoria).'+
