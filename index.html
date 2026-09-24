@@ -37,6 +37,14 @@ header .sub{font-size:.78rem; opacity:.85; margin-top:2px;}
 
 .derived-card{background:var(--panel); border-radius:14px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,.08); margin-bottom:16px; border:1px solid var(--border);}
 .derived-card h2{margin:0 0 10px; font-size:1rem; color:var(--accent-dark);}
+.quick-card{background:linear-gradient(135deg,#0d9488,#0f766e); border-radius:14px; padding:16px 18px; box-shadow:0 1px 3px rgba(0,0,0,.08); margin-bottom:16px; color:#fff;}
+.quick-card .qc-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;}
+.quick-card h2{margin:0; font-size:1rem; color:#fff;}
+.quick-card .qc-badge{font-size:.68rem; text-transform:uppercase; letter-spacing:.04em; background:rgba(255,255,255,.18); padding:3px 9px; border-radius:20px;}
+.quick-card .qc-dose{font-size:1.6rem; font-weight:800; line-height:1.15;}
+.quick-card .qc-sub{font-size:.78rem; opacity:.9; margin-top:2px;}
+.quick-card .qc-link{display:inline-block; margin-top:10px; font-size:.78rem; color:#fff; text-decoration:underline; cursor:pointer; opacity:.95;}
+.quick-card .qc-link:hover{opacity:1;}
 .derived-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
 .derived-group{background:var(--panel2); border-radius:10px; padding:10px 12px; border:1px solid var(--border);}
 .derived-group h3{margin:0 0 6px; font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; color:var(--muted);}
@@ -56,6 +64,10 @@ header .sub{font-size:.78rem; opacity:.85; margin-top:2px;}
 .category-head .chev{transition:transform .15s;}
 .category.collapsed .chev{transform:rotate(-90deg);}
 .category-source{font-size:.68rem; font-weight:400; opacity:.85; display:block; margin-top:2px;}
+.cat-info{margin:0 16px 12px; padding:12px 14px; background:#f8fafc; border:1px solid var(--border); border-radius:10px; font-size:.78rem; line-height:1.55; color:#334155;}
+.cat-info b{color:var(--ink); display:block; margin-bottom:2px; margin-top:8px;}
+.cat-info b:first-child{margin-top:0;}
+.cat-info .warn-line{color:var(--danger); font-weight:600;}
 
 table{width:100%; border-collapse:collapse; font-size:.86rem;}
 thead th{text-align:left; font-size:.68rem; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); padding:6px 16px; border-bottom:1px solid var(--border);}
@@ -151,6 +163,16 @@ body{background:#fff;}
 <div class="derived-card">
 <h2>Parametri calcolati</h2>
 <div class="derived-grid" id="derivedGrid"></div>
+</div>
+
+<div class="quick-card">
+<div class="qc-head">
+<h2>💊 OZASED — dose rapida</h2>
+<span class="qc-badge">Midazolam orale monodose</span>
+</div>
+<div class="qc-dose" id="ozasedDose">— dato mancante</div>
+<div class="qc-sub" id="ozasedSub">Inserisci il peso per calcolare la dose (0,25 mg/kg, max 20 mg)</div>
+<span class="qc-link" id="ozasedJump">Vedi scheda completa (controindicazioni, interazioni, somministrazione) ↓</span>
 </div>
 
 <div class="search-bar">
@@ -420,6 +442,20 @@ items:[
 {name:"Dexmedetomidina", route:"Buccale", perKgLow:3, perKgHigh:4, unit:"mcg", onset:"45-60 min", duration:"60-90 min"},
 {name:"Propofol", route:"EV", perKgLow:1, perKgHigh:2, unit:"mg", onset:"2-3 min", duration:"10-15 min"},
 ]},
+{ title:"OZASED — Midazolam orale monodose (premedicazione/sedazione)", color:"var(--cat9)",
+anchorId:"ozased-full",
+source:"Fonte: RCP OZASED 2 mg/ml soluzione orale, Istituto Gentili S.r.l. — revisione testo 04/2026. Indicato 6 mesi–17 anni per sedazione moderata prima di procedura diagnostica/terapeutica o come premedicazione anestesiologica.",
+items:[
+{name:"OZASED", route:"PO — dose singola, con applicatore orale graduato in kg dedicato", perKg:0.25, unit:"mg", max:20, note:"non raccomandata una dose successiva immediata; somministrare ~30 min prima della procedura/anestesia", onset:"30-45 min", duration:"—"},
+],
+info:'<b>Composizione e presentazione</b>2 mg/ml; fiala monodose da 5 ml = 10 mg di midazolam. Contiene gammadex, etanolo (&lt;100 mg/fiala) e sodio (&lt;1 mmol/fiala). Per pazienti &gt;40 kg servono 2 fiale (es. 41 kg: prelevare 30 kg dalla prima fiala + 11 kg dalla seconda; 42 kg: 30 kg + 12 kg).'+
+'<b>Popolazione pediatrica</b>Sicurezza ed efficacia non stabilite sotto i 6 mesi: nessun dato disponibile. Nei pazienti obesi la dose si calcola sul peso corporeo effettivo, comunque fino al limite di 20 mg.'+
+'<b class="warn-line">Controindicazioni</b>Ipersensibilità al principio attivo/benzodiazepine; miastenia grave; insufficienza respiratoria grave; anomalia anatomica delle vie respiratorie o malattia polmonare; sindrome da apnea notturna; compromissione epatica grave.'+
+'<b>Cautele</b>Insufficienza respiratoria cronica, epatica lieve/moderata, cardiaca o renale cronica (possibile accumulo/prolungamento effetto); pazienti in cattivo stato generale (maggiore sensibilità SNC); storia di alcolismo/tossicodipendenza (evitare); associazione con alcol o altri depressori del SNC (evitare — rischio di sedazione profonda/depressione respiratoria).'+
+'<b>Interazioni (CYP3A4)</b>Inibitori che aumentano l\'effetto: antifungini azolici, inibitori delle proteasi HIV, macrolidi, verapamil/diltiazem, aprepitant, cimetidina, succo d\'uva. Induttori che riducono l\'effetto: rifampicina, carbamazepina, fenitoina, iperico.'+
+'<b>Somministrazione</b>Esclusivamente da personale sanitario in ambiente attrezzato per monitoraggio e supporto respiratorio/cardiovascolare. Solo per via orale, solo con l\'applicatore dedicato graduato in kg (3–40 kg, incrementi di 1 kg); la soluzione va ingerita immediatamente dopo il prelievo. Alle dimissioni il paziente deve essere accompagnato da un adulto dopo completa ripresa.'+
+'<b class="warn-line">Sovradosaggio/antidoto</b>Flumazenil (antagonista delle benzodiazepine), sotto stretta supervisione, in caso di depressione respiratoria o coma; cautela estrema se uso concomitante di triciclici, farmaci epilettogeni o anomalie ECG (QRS/QT).'
+},
 { title:"Farmaci pre-operatori", color:"var(--cat1)", items:[
 {name:"Atropina", route:"IM", perKg:0.02, unit:"mg", min:0.1, max:0.6},
 {name:"Atropina", route:"IV", perKg:0.01, unit:"mg", min:0.1, max:0.5},
@@ -554,7 +590,7 @@ function renderCategories(wt){
 const container = document.getElementById('categoriesContainer');
 let html = '';
 categories.forEach(function(cat, ci){
-html += '<div class="category" data-idx="'+ci+'">';
+html += '<div class="category" data-idx="'+ci+'"'+(cat.anchorId?(' id="'+cat.anchorId+'"'):'')+'>';
 html += '<div class="category-head" style="background:'+cat.color+'"><span>'+cat.title+(cat.source?('<span class="category-source">'+cat.source+'</span>'):'')+'</span><span class="chev">▾</span></div>';
 html += '<div class="category-body"><table><thead><tr><th>Farmaco</th><th>Via / note</th><th>Dose/kg</th><th>Dose calcolata</th><th>Onset</th><th>Durata</th></tr></thead><tbody>';
 cat.items.forEach(function(item, ii){
@@ -571,7 +607,9 @@ html += '<td class="timing">'+(item.onset || '–')+'</td>';
 html += '<td class="timing">'+(item.duration || '–')+'</td>';
 html += '</tr>';
 });
-html += '</tbody></table></div></div>';
+html += '</tbody></table>';
+if(cat.info) html += '<div class="cat-info">'+cat.info+'</div>';
+html += '</div></div>';
 });
 container.innerHTML = html;
 
@@ -603,10 +641,36 @@ document.querySelectorAll('.category').forEach(function(c){ c.classList.remove('
 });
 document.getElementById('printBtn').addEventListener('click', function(){ window.print(); });
 
+function renderQuickCard(wt){
+const doseEl = document.getElementById('ozasedDose');
+const subEl = document.getElementById('ozasedSub');
+if(wt===null){
+doseEl.textContent = '— dato mancante';
+subEl.textContent = 'Inserisci il peso per calcolare la dose (0,25 mg/kg, max 20 mg)';
+return;
+}
+const raw = wt*0.25;
+const dose = Math.min(raw, 20);
+const capped = raw>20;
+doseEl.textContent = fmt(dose,2)+' mg';
+let vials = wt<=40 ? '1 fiala (5 ml)' : '2 fiale';
+let sub = 'Dose singola PO'+(capped?' — limitata al tetto massimo di 20 mg':'')+' · '+vials+' · somministrare ~30 min prima della procedura';
+subEl.textContent = sub;
+}
+
+document.getElementById('ozasedJump').addEventListener('click', function(){
+const target = document.getElementById('ozased-full');
+if(target){
+target.classList.remove('collapsed');
+target.scrollIntoView({behavior:'smooth', block:'start'});
+}
+});
+
 function update(){
 const p = getPatient();
 const d = computeDerived(p);
 renderDerived(p, d);
+renderQuickCard(p.wt);
 renderCategories(p.wt);
 }
 
